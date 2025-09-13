@@ -1,6 +1,5 @@
 "use client"
 
-
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -19,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "./ui/form"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { todoFormSchema, TodoFormValues } from "@/schema"
+import { addTaskAction } from "@/actions/tasks"
 
 
 
@@ -30,12 +30,12 @@ export function ToDoAddForm() {
     defaultValues: {
       title: "",
       body: "",
-      completed: false,
+      complete: false,
     }
   });
 
-  const onSubmit: SubmitHandler<TodoFormValues> = (data) => {
-    console.log(data)
+  const onSubmit: SubmitHandler<TodoFormValues> = async (data) => {
+    await addTaskAction(data);
   }
 
 
