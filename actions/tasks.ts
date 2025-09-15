@@ -2,15 +2,20 @@
 
 import { ITask } from "@/interface";
 import { TodoFormValues } from "@/schema";
+import { auth } from "@clerk/nextjs/server";
 import { PrismaClient } from "@prisma/client"
 import { revalidatePath } from "next/cache";
 
 const prisma = new PrismaClient()
 
 export const getAllTasksAction = async () => {
+  const { userId } = await auth();
   const tasks = await prisma.task.findMany({
     orderBy: {
       createdAt: "desc"
+    },
+    where: {
+      userId: userId as string
     }
   });
   return tasks;
@@ -18,8 +23,9 @@ export const getAllTasksAction = async () => {
 }
 
 export const addTaskAction = async (data: TodoFormValues) => {
-  await prisma.task.create({ data });
-  revalidatePath("/")
+  const { userId } = await auth();
+  await prisma.task.create({ data: { ...data, userId: userId as string } });
+  revalidatePath("/");
 }
 
 export const deleteTaskAction = async (id: string) => {

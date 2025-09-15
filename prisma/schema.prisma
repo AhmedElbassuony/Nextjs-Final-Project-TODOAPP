@@ -9,6 +9,7 @@ generator client {
 
 model Task {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
   title     String
   body      String?
   complete  Boolean  @default(false)
