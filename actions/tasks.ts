@@ -1,9 +1,9 @@
 "use server";
 
+import { ITask } from "@/interface";
 import { TodoFormValues } from "@/schema";
 import { PrismaClient } from "@prisma/client"
 import { revalidatePath } from "next/cache";
-import { string } from "zod";
 
 const prisma = new PrismaClient()
 
@@ -28,5 +28,19 @@ export const deleteTaskAction = async (id: string) => {
       id
     }
   });
+  revalidatePath("/");
+}
+
+export const editTaskAction = async (data: ITask) => {
+  await prisma.task.update({
+    where: {
+      id: data.id
+    },
+    data: {
+      title: data.title,
+      body: data.body,
+      complete: data.complete
+    }
+  })
   revalidatePath("/");
 }

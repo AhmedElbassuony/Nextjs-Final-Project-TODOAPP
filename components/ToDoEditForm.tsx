@@ -18,13 +18,18 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "./ui/form"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { todoFormSchema, TodoFormValues } from "@/schema"
-import { addTaskAction } from "@/actions/tasks"
+import { addTaskAction, editTaskAction } from "@/actions/tasks"
 import { useState } from "react"
 import { Checkbox } from "./ui/checkbox"
+import { ITask } from "@/interface"
+import { Pen } from "lucide-react"
+
+interface IProps {
+  task: ITask,
+}
 
 
-
-export function ToDoAddForm() {
+export function ToDoEditForm({ task }: IProps) {
 
   const [open, setOpen] = useState(false)
 
@@ -32,30 +37,26 @@ export function ToDoAddForm() {
     resolver: zodResolver(todoFormSchema),
     mode: "onChange",
     defaultValues: {
-      title: "",
-      body: "",
-      complete: false,
+      title: task.title,
+      body: task.body as string,
+      complete: task.complete,
     }
   });
 
   const onSubmit: SubmitHandler<TodoFormValues> = async (data) => {
-    await addTaskAction(data);
+    await editTaskAction({ ...data, id: task.id });
     setOpen(false);
-    form.reset();
   }
 
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add Task</Button>
+        <Button variant={"secondary"}><Pen /></Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Task</DialogTitle>
-          <DialogDescription>
-            Add New Task To You'r ToDo List
-          </DialogDescription>
+          <DialogTitle>Edit Task</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -108,7 +109,7 @@ export function ToDoAddForm() {
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button type="submit">Add</Button>
+              <Button type="submit">Save</Button>
             </DialogFooter>
           </form>
         </Form>

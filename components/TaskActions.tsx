@@ -8,6 +8,7 @@ import { useState } from "react";
 import { ITask } from "@/interface";
 import { deleteTaskAction } from "@/actions/tasks";
 import { Spinner } from "./ui/Spinner";
+import { ToDoEditForm } from "./ToDoEditForm";
 
 interface IProps {
   task: ITask
@@ -26,7 +27,7 @@ export const TaskActions = ({ task }: IProps) => {
 
   return (
     <div className="space-x-3">
-      <Button variant={"secondary"}><Pen /></Button>
+      <ToDoEditForm task={task} />
       <Button variant={"destructive"} onClick={onDelete}>{loading ? <Spinner /> : <Trash />}</Button>
     </div>
   );
