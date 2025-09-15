@@ -19,10 +19,13 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "
 import { SubmitHandler, useForm } from "react-hook-form"
 import { todoFormSchema, TodoFormValues } from "@/schema"
 import { addTaskAction } from "@/actions/tasks"
+import { useState } from "react"
 
 
 
 export function ToDoAddForm() {
+
+  const [open, setOpen] = useState(false)
 
   const form = useForm<TodoFormValues>({
     resolver: zodResolver(todoFormSchema),
@@ -36,13 +39,14 @@ export function ToDoAddForm() {
 
   const onSubmit: SubmitHandler<TodoFormValues> = async (data) => {
     await addTaskAction(data);
+    setOpen(false);
   }
 
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Add Task</Button>
+        <Button>Add Task</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
